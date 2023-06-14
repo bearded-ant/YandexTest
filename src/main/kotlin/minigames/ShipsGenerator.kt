@@ -5,12 +5,12 @@ import kotlin.random.Random
 const val SHIP_MAX_SIZE = 4
 const val OVER_SIZE_BOARD = SHIP_MAX_SIZE + 2
 
-const val OVER_SIZE_POINT = 3.0
+const val OVER_SIZE_POINT = 6.0
 const val LOCKED_CELL_POINT = 0.2
 const val SHIP_POINT = 1.0
 
-class ShipsGenerator {
-    fun initShips(shipsType: List<Int>, boardSize: Int): List<Ship> {
+class ShipsGenerator(private val boardSize: Int) {
+    fun initShips(shipsType: List<Int>): List<Ship> {
         val firstGenerationShips = mutableListOf<Ship>()
         for (ship in shipsType) {
             val row = (1..boardSize).random()
@@ -40,10 +40,10 @@ class ShipsGenerator {
         return oversizeBoard
     }
 
-    fun shipsFitness(shipGeneration: List<Ship>, board: Array<DoubleArray>) {
-
+    //    fun shipsFitness(shipGeneration: List<Ship>, originalBoard: Array<DoubleArray>): Array<DoubleArray> {
+    fun shipsFitness(shipGeneration: List<Ship>): Array<DoubleArray> {
+        val board = initBoard(boardSize)
         for (ship in shipGeneration) {
-
             val resultMask = getShipMask(ship)
             val rowEndIndex = ship.rowStart - 1 + resultMask.lastIndex
             val colEndIndex = ship.columnStart - 1 + resultMask[0].lastIndex
@@ -54,6 +54,7 @@ class ShipsGenerator {
                 }
             }
         }
+        return board
     }
 
     fun getFitnessSum(board: Array<DoubleArray>): Double {
@@ -63,7 +64,7 @@ class ShipsGenerator {
         val overSizeBoardSum = board.sumOf { row ->
             row.filter { selector -> (OVER_SIZE_POINT + 4 * LOCKED_CELL_POINT) < selector }.sum()
         }
-        return normalBoardSum + overSizeBoardSum
+        return normalBoardSum + (overSizeBoardSum % OVER_SIZE_POINT)
     }
 
     private fun getShipMask(ship: Ship): Array<DoubleArray> {
@@ -85,23 +86,13 @@ class ShipsGenerator {
         for (i in 0..mask.lastIndex) {
             println()
             for (j in 0..mask[i].lastIndex)
-                print("[${mask[i][j]}] ")
+                if (mask[i][j] < OVER_SIZE_POINT)
+                    print("\u001B[32m [${String.format("%.2f", mask[i][j])}] \u001B[0m")
+                else if (mask[i][j] > (OVER_SIZE_POINT+1)) print("\u001B[31m [${String.format("%.2f", mask[i][j])}] \u001B[0m")
+                else print(" [${String.format("%.2f", mask[i][j])}] ")
         }
         println()
         println("-----")
         println()
-    }
-
-    //todo mutate fun
-    fun simpleMutation(ships: List<Ship>, boardSize: Int): List<Ship> {
-        val mutateShip = ships.indices.random()
-
-        if (Random.nextBoolean() == ships[mutateShip].orientationVertical) {
-            ships[mutateShip].rowStart = (1..boardSize).random()
-            ships[mutateShip].columnStart = (1..boardSize).random()
-        } else
-            ships[mutateShip].orientationVertical = !ships[mutateShip].orientationVertical
-
-        return ships
     }
 }
