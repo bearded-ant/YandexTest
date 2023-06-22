@@ -3,14 +3,14 @@ import minigames.Ship
 import minigames.ShipsGenerator
 import java.util.*
 
-const val BOARD_SIZE = 5
+const val BOARD_SIZE = 10
 val generator = ShipsGenerator(BOARD_SIZE)
 val geneticMutator = GeneticAlgorithms(BOARD_SIZE)
 fun main() {
 //    print(AddDigits().addDigits(22))
 
     var counter = 0
-    val playShips = listOf(4, 4, 4, 4)
+    val playShips = listOf(4, 3, 3, 2,2,2,1,1,1,1)
     var fitnessSum = 1000.0
     val population = sortedMapOf<Double, List<Ship>>()
 
@@ -27,16 +27,14 @@ fun main() {
 
     println("исходная популяция:\t ${population.keys}")
 
-    val halfMap: MutableMap<Double, List<Ship>>
+    val bestHalfPopulation: MutableMap<Double, List<Ship>>
     val mutatePopulation = mutableMapOf<Double, List<Ship>>()
 
     if (fitnessSum > 0) {
 
-        halfMap = selectBestHalf(population)
-        println("лучшая половина:\t ${halfMap.keys}")
-
-        mutatePopulation.putAll(mutation(halfMap))
-
+        bestHalfPopulation = selectBestHalf(population)
+        println("лучшая половина:\t ${bestHalfPopulation.keys}")
+        mutatePopulation.putAll(mutation(bestHalfPopulation))
 //        mutatePopulation.putAll(halfMap)
         val sortMut = mutatePopulation.toSortedMap()
 
@@ -47,21 +45,23 @@ fun main() {
 
 }
 
-private fun mutation(halfMap: MutableMap<Double, List<Ship>>): MutableMap<Double, List<Ship>> {
+private fun mutation(population: MutableMap<Double, List<Ship>>): Map<Double, List<Ship>> {
     val mutateHalf = mutableMapOf<Double, List<Ship>>()
-    val dddd = halfMap.toSortedMap()
-    val keyList = halfMap.keys.toList()
+    val keyList = population.keys.toList()
 
     for (i in 0 until keyList.lastIndex step 2) {
-        val first = dddd.getValue(keyList[i + 1])
-        val second = dddd.getValue(keyList[i])
-        val selectionSon = geneticMutator.singlePointCrossing(
-            first, second
-        )
-        val mutateSonBoard = generator.shipsFitness(geneticMutator.simpleMutation(selectionSon))
-        generator.printMask(mutateSonBoard)
-        val sonSum = generator.getFitnessSum(mutateSonBoard)
-        mutateHalf.put(sonSum, selectionSon)
+        val mather = population.getValue(keyList[i + 1])
+        val father = population.getValue(keyList[i])
+        val sexMatherFatherResult = geneticMutator.singlePointCrossing(mather, father)
+
+        geneticMutator.kPointCrossing(2, mather,father)
+
+
+        for (child in sexMatherFatherResult.toList()) {
+            val mutateSonBoard = generator.shipsFitness(geneticMutator.simpleMutation(child))
+            val childSum = generator.getFitnessSum(mutateSonBoard)
+            mutateHalf[childSum] = child
+        }
     }
     return mutateHalf
 }

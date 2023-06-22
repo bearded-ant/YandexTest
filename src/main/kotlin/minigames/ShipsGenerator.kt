@@ -86,10 +86,13 @@ class ShipsGenerator(private val boardSize: Int) {
         for (i in 0..mask.lastIndex) {
             println()
             for (j in 0..mask[i].lastIndex)
-                if (mask[i][j] < OVER_SIZE_POINT)
+                if ((mask[i][j] > 1) && (mask[i][j] < OVER_SIZE_BOARD))
+                    print("\u001B[31m [${String.format("%.2f", mask[i][j])}] \u001B[0m")
+                else if (mask[i][j] in 1.0..1.8)
                     print("\u001B[32m [${String.format("%.2f", mask[i][j])}] \u001B[0m")
-                else if (mask[i][j] > (OVER_SIZE_POINT+1)) print("\u001B[31m [${String.format("%.2f", mask[i][j])}] \u001B[0m")
-                else print(" [${String.format("%.2f", mask[i][j])}] ")
+                else if (mask[i][j] > (OVER_SIZE_POINT + 1))
+                    print("\u001B[31m [${String.format("%.2f", mask[i][j])}] \u001B[0m")
+                else print(" \u001B[37m ${String.format("%.2f", mask[i][j])}] \u001B[0m")
         }
         println()
         println("-----")
