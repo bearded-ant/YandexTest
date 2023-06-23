@@ -54,7 +54,7 @@ private fun mutation(population: MutableMap<Double, List<Ship>>): Map<Double, Li
         val father = population.getValue(keyList[i])
         val sexMatherFatherResult = geneticMutator.singlePointCrossing(mather, father)
 
-        geneticMutator.kPointCrossing(2, mather,father)
+        geneticMutator.kPointCrossing(2, mather.toMutableList(),father.toMutableList())
 
 
         for (child in sexMatherFatherResult.toList()) {

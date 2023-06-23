@@ -42,15 +42,25 @@ class GeneticAlgorithms(val boardSize: Int) {
 
         val sortedCrossPoints = generateCrossPoints(k, mather.lastIndex)
 
-        for (i in 0..sortedCrossPoints.lastIndex) {
+        println("mather до  $mather")
+        println("father до $father")
 
-            val subMather: MutableList<Ship> = mather.subList(sortedCrossPoints[i], sortedCrossPoints[i+1])
-//            val subFather: MutableList<Ship> = father.subList(0, crossPoint[k]).toMutableList()
-//            father.
+        for (i in 0..sortedCrossPoints.lastIndex step 2) {
+
+            val subMather: MutableList<Ship> = mather.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1])
+            print("submather $subMather")
+            val subFatherCopy: MutableList<Ship> =
+                father.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1]).toMutableList()
+            val subFather: MutableList<Ship> = father.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1])
+            print("subfather $subFather")
+
+
+
 
         }
 //
-
+        println("mather после  $mather")
+        println("father после $father")
 
 
 //        val subFather = father.subList(crossPoint, father.size).toMutableList()
@@ -67,4 +77,10 @@ class GeneticAlgorithms(val boardSize: Int) {
         return crossPoint.toSortedSet().toIntArray()
     }
 
+}
+
+fun replaceElement(start: Int, end: Int, big: MutableList<Int>, small: List<Int>) {
+    for ((iterator, i) in (start until end).withIndex()) {
+        big[i] = small[iterator]
+    }
 }
