@@ -62,7 +62,7 @@ private fun mutation(bestHalf: MutableMap<Double, List<Ship>>): SortedMap<Double
         val mather = bestHalf.getValue(keyList[i])
         val father = bestHalf.getValue(keyList[i + 1])
 
-        val mutatePair = geneticMutator.kPointCrossing(2, mather.toMutableList(), father.toMutableList())
+        val mutatePair = geneticMutator.kPointCrossing(4, mather.toMutableList(), father.toMutableList())
 
         for (element in mutatePair.toList()) {
             val newBoard = generator.shipsFitness(element)
