@@ -38,36 +38,18 @@ class GeneticAlgorithms(val boardSize: Int) {
         return Pair(son, daughter)
     }
 
-    fun kPointCrossing(k: Int, mather: MutableList<Ship>, father: MutableList<Ship>) {
+    fun kPointCrossing(k: Int, mather: MutableList<Ship>, father: MutableList<Ship>): Pair<List<Ship>, List<Ship>> {
 
         val sortedCrossPoints = generateCrossPoints(k, mather.lastIndex)
-
-        println("mather до  $mather")
-        println("father до $father")
-
         for (i in 0..sortedCrossPoints.lastIndex step 2) {
 
-            val subMather: MutableList<Ship> = mather.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1])
-            print("submather $subMather")
-            val subFatherCopy: MutableList<Ship> =
-                father.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1]).toMutableList()
-            val subFather: MutableList<Ship> = father.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1])
-            print("subfather $subFather")
+            val subMather = mather.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1])
+            val subFatherCopy = father.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1]).toMutableList()
 
-
-
-
+            replaceElement(sortedCrossPoints[i], sortedCrossPoints[i + 1], father, subMather)
+            replaceElement(sortedCrossPoints[i], sortedCrossPoints[i + 1], mather, subFatherCopy)
         }
-//
-        println("mather после  $mather")
-        println("father после $father")
-
-
-//        val subFather = father.subList(crossPoint, father.size).toMutableList()
-//        val daughter: MutableList<Ship> = mather.subList(0, crossPoint).toMutableList()
-//        daughter.addAll(subFather)
-
-//        return Pair(son, daughter)
+        return Pair(mather, father)
     }
 
     private fun generateCrossPoints(k: Int, chromosomeLength: Int): IntArray {
@@ -77,10 +59,9 @@ class GeneticAlgorithms(val boardSize: Int) {
         return crossPoint.toSortedSet().toIntArray()
     }
 
-}
-
-fun replaceElement(start: Int, end: Int, big: MutableList<Int>, small: List<Int>) {
-    for ((iterator, i) in (start until end).withIndex()) {
-        big[i] = small[iterator]
+    private fun replaceElement(start: Int, end: Int, big: MutableList<Ship>, small: List<Ship>) {
+        for ((iterator, i) in (start until end).withIndex()) {
+            big[i] = small[iterator]
+        }
     }
 }

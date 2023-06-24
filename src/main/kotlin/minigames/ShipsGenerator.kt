@@ -16,10 +16,6 @@ class ShipsGenerator(private val boardSize: Int) {
             val row = (1..boardSize).random()
             val column = (1..boardSize).random()
             val orientation = Random.nextBoolean()
-            //
-//            val row = 5
-//            val column = 5
-//            val orientation = true
             firstGenerationShips.add(Ship(row, column, orientation, ship))
         }
         return firstGenerationShips
