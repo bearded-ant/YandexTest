@@ -38,26 +38,18 @@ class GeneticAlgorithms(val boardSize: Int) {
         return Pair(son, daughter)
     }
 
-    fun kPointCrossing(k: Int, mather: MutableList<Ship>, father: MutableList<Ship>) {
+    fun kPointCrossing(k: Int, mather: MutableList<Ship>, father: MutableList<Ship>): Pair<List<Ship>, List<Ship>> {
 
         val sortedCrossPoints = generateCrossPoints(k, mather.lastIndex)
+        for (i in 0..sortedCrossPoints.lastIndex step 2) {
 
-        for (i in 0..sortedCrossPoints.lastIndex) {
+            val subMather = mather.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1])
+            val subFatherCopy = father.subList(sortedCrossPoints[i], sortedCrossPoints[i + 1]).toMutableList()
 
-            val subMather: MutableList<Ship> = mather.subList(sortedCrossPoints[i], sortedCrossPoints[i+1])
-//            val subFather: MutableList<Ship> = father.subList(0, crossPoint[k]).toMutableList()
-//            father.
-
+            replaceElement(sortedCrossPoints[i], sortedCrossPoints[i + 1], father, subMather)
+            replaceElement(sortedCrossPoints[i], sortedCrossPoints[i + 1], mather, subFatherCopy)
         }
-//
-
-
-
-//        val subFather = father.subList(crossPoint, father.size).toMutableList()
-//        val daughter: MutableList<Ship> = mather.subList(0, crossPoint).toMutableList()
-//        daughter.addAll(subFather)
-
-//        return Pair(son, daughter)
+        return Pair(mather, father)
     }
 
     private fun generateCrossPoints(k: Int, chromosomeLength: Int): IntArray {
@@ -67,4 +59,9 @@ class GeneticAlgorithms(val boardSize: Int) {
         return crossPoint.toSortedSet().toIntArray()
     }
 
+    private fun replaceElement(start: Int, end: Int, big: MutableList<Ship>, small: List<Ship>) {
+        for ((iterator, i) in (start until end).withIndex()) {
+            big[i] = small[iterator]
+        }
+    }
 }
