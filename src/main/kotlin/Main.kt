@@ -5,6 +5,7 @@ import java.util.*
 import kotlin.system.measureTimeMillis
 
 const val BOARD_SIZE = 10
+const val POPULATION_SIZE = 200
 val generator = ShipsGenerator(BOARD_SIZE)
 val geneticMutator = GeneticAlgorithms(BOARD_SIZE)
 fun main() {
@@ -13,17 +14,17 @@ fun main() {
     val executionTime = measureTimeMillis {
         val playShips = listOf(4, 3, 3, 2, 2, 2, 1, 1, 1, 1)
 
-        var population: SortedMap<Double, List<Ship>> = createPopulation(playShips, 400)
+        var population: SortedMap<Double, List<Ship>> = createPopulation(playShips, POPULATION_SIZE)
         println("исходная популяция:\t ${population.keys}")
 
         var generationCount = 0
 
-        while (!population.containsKey(0.0) && (generationCount < 50)) {
+        while (!population.containsKey(0.0)) {
             val bestHalf = selectBestHalf(population)
             println("best half:\t ${bestHalf.keys}")
             val afterMutation = mutation(bestHalf)
             println("after mutation:\t ${afterMutation.keys}")
-            population = createPopulation(playShips, 30 - afterMutation.size)
+            population = createPopulation(playShips, POPULATION_SIZE - afterMutation.size)
             population.putAll(afterMutation)
             println("new generation:\t ${population.keys}")
 
